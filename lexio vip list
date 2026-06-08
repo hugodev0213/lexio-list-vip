@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lexio · Lista VIP</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700&family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold:#C9A84C; --gold-light:#e2c97e;
+  --navy:#06080f; --navy2:#0a101d; --navy-card:#162C6D; --navy-card2:#0A101D;
+  --white:#fff; --gray:#9ca3af; --gray-dim:#6b7280;
+  --wpp:#25D366; --wpp-dark:#075E54;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:'DM Mono',monospace;
+  background:var(--navy);
+  color:var(--white);
+  min-height:100vh;
+  overflow-x:hidden;
+  position:relative;
+}
+
+/* GRAIN */
+body::after{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;opacity:0.05;mix-blend-mode:overlay;
+  background:url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%25" height="100%25" filter="url(%23n)"/></svg>');
+}
+
+/* GRID BG */
+.grid-bg{
+  position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0.4;
+  background-size:60px 60px;
+  background-image:
+    linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px);
+  -webkit-mask-image:radial-gradient(ellipse at center, black 0%, transparent 75%);
+  mask-image:radial-gradient(ellipse at center, black 0%, transparent 75%);
+}
+
+/* NAV */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  padding:20px 40px;display:flex;align-items:center;justify-content:space-between;
+  background:linear-gradient(to bottom, rgba(6,8,15,0.85), transparent);
+  backdrop-filter:blur(6px);
+}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.nav-logo-icon{width:34px;height:34px;border-radius:8px;background:var(--navy2);border:0.5px solid rgba(201,168,76,0.4);display:flex;align-items:center;justify-content:center;}
+.nav-logo-icon svg{width:18px;height:18px;}
+.nav-logo-name{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:#fff;letter-spacing:-0.5px;}
+.nav-logo-name span{color:var(--gold);}
+.nav-badge{font-size:11px;color:var(--gold);background:rgba(201,168,76,0.1);border:0.5px solid rgba(201,168,76,0.25);padding:6px 14px;border-radius:99px;letter-spacing:1px;}
+
+/* HERO */
+.hero{
+  min-height:100vh;display:flex;align-items:center;
+  padding:120px 40px 60px;position:relative;z-index:2;
+  max-width:1300px;margin:0 auto;
+}
+.hero-grid{display:grid;grid-template-columns:1.1fr 0.9fr;gap:60px;align-items:center;width:100%;}
+
+/* LEFT */
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:10px;margin-bottom:24px;
+  opacity:0;animation:fadeUp .8s ease forwards .2s;
+}
+.hero-eyebrow-line{width:24px;height:1px;background:var(--gold);opacity:0.6;}
+.hero-eyebrow-text{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);opacity:0.85;}
+
+.hero-title{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(34px,4.2vw,58px);font-weight:900;
+  line-height:1.05;letter-spacing:-1.5px;color:#fff;margin-bottom:20px;
+  opacity:0;animation:fadeUp .8s ease forwards .4s;
+}
+.hero-title em{font-style:italic;color:var(--gold);}
+.hero-sub{
+  font-size:13px;color:var(--gray);line-height:1.8;letter-spacing:0.3px;
+  margin-bottom:24px;max-width:440px;
+  opacity:0;animation:fadeUp .8s ease forwards .6s;
+}
+
+/* OFERTA VIP */
+.vip-offer{
+  background:linear-gradient(145deg, rgba(201,168,76,0.08), rgba(201,168,76,0.02));
+  border:0.5px solid rgba(201,168,76,0.25);
+  border-radius:14px;padding:18px 20px;margin-bottom:28px;max-width:440px;
+  opacity:0;animation:fadeUp .8s ease forwards .7s;
+}
+.vip-offer-top{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.vip-tag{font-size:9px;background:var(--gold);color:var(--navy);padding:3px 8px;border-radius:4px;font-weight:700;letter-spacing:0.5px;font-family:'Syne',sans-serif;}
+.vip-offer-title{font-size:12px;color:var(--gold-light);font-weight:500;}
+.vip-prices{display:flex;align-items:baseline;gap:12px;}
+.vip-price-now{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:#fff;}
+.vip-price-now span{font-size:13px;color:var(--gray);font-weight:400;}
+.vip-price-old{font-size:13px;color:var(--gray-dim);text-decoration:line-through;}
+.vip-price-label{font-size:10px;color:var(--gold);margin-top:4px;letter-spacing:0.5px;}
+
+/* FORM */
+.hero-form{opacity:0;animation:fadeUp .8s ease forwards .8s;max-width:440px;}
+.form-row{display:flex;gap:10px;margin-bottom:10px;}
+.form-input{
+  flex:1;background:rgba(255,255,255,0.05);border:0.5px solid rgba(255,255,255,0.12);
+  border-radius:10px;padding:14px 16px;font-size:13px;color:#fff;
+  font-family:'DM Mono',monospace;outline:none;transition:border-color .2s;width:100%;
+}
+.form-input::placeholder{color:rgba(255,255,255,0.3);}
+.form-input:focus{border-color:var(--gold);}
+.btn-wpp{
+  width:100%;background:var(--wpp);color:#fff;border:none;border-radius:10px;
+  padding:15px 24px;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;
+  cursor:pointer;letter-spacing:0.3px;transition:all .2s;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  box-shadow:0 8px 24px rgba(37,211,102,0.25);
+}
+.btn-wpp:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(37,211,102,0.35);}
+.btn-wpp:active{transform:translateY(0);}
+.btn-wpp svg{width:20px;height:20px;}
+.form-disclaimer{font-size:10px;color:var(--gray-dim);text-align:center;margin-top:12px;letter-spacing:0.3px;}
+.form-disclaimer span{color:var(--gold);}
+
+/* SOCIAL PROOF */
+.social-proof{
+  display:flex;align-items:center;gap:12px;margin-top:24px;
+  opacity:0;animation:fadeUp .8s ease forwards 1s;
+}
+.avatars{display:flex;}
+.avatar{
+  width:28px;height:28px;border-radius:50%;border:2px solid var(--navy);
+  background:linear-gradient(135deg,var(--gold),var(--navy-card));
+  margin-left:-8px;display:flex;align-items:center;justify-content:center;font-size:11px;
+}
+.avatar:first-child{margin-left:0;}
+.social-text{font-size:11px;color:var(--gray);}
+.social-text strong{color:var(--gold);}
+
+/* RIGHT: PHONE CARD */
+.hero-right{display:flex;align-items:center;justify-content:center;opacity:0;animation:fadeIn 1s ease forwards .9s;perspective:1500px;}
+
+.phone-card{
+  position:relative;
+  background:linear-gradient(145deg, var(--navy-card) 0%, var(--navy-card2) 100%);
+  border-radius:36px;padding:40px 30px;
+  border:1px solid rgba(255,255,255,0.04);
+  box-shadow:0 40px 100px -20px rgba(0,0,0,0.9), 0 20px 40px -20px rgba(0,0,0,0.8),
+    inset 0 1px 2px rgba(255,255,255,0.2), inset 0 -2px 4px rgba(0,0,0,0.8);
+  transition:transform .4s cubic-bezier(.25,1,.5,1);
+}
+.phone-card-label{
+  position:absolute;top:24px;left:0;right:0;text-align:center;
+  font-family:'Syne',sans-serif;font-size:64px;font-weight:900;
+  color:rgba(255,255,255,0.04);letter-spacing:-2px;text-transform:uppercase;pointer-events:none;
+}
+
+/* IPHONE */
+.iphone{
+  position:relative;width:260px;height:540px;border-radius:44px;margin:0 auto;
+  background:#111;
+  box-shadow:inset 0 0 0 2px #52525B, inset 0 0 0 7px #000, 0 30px 60px -15px rgba(0,0,0,0.9);
+}
+.iphone-screen{
+  position:absolute;inset:7px;border-radius:38px;overflow:hidden;
+  background:#0b141a;
+}
+.notch{position:absolute;top:8px;left:50%;transform:translateX(-50%);width:90px;height:24px;background:#000;border-radius:99px;z-index:50;}
+
+/* WHATSAPP UI */
+.wpp-header{
+  background:var(--wpp-dark);padding:38px 14px 12px;display:flex;align-items:center;gap:10px;
+}
+.wpp-back{color:#fff;font-size:16px;}
+.wpp-group-pic{
+  width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--navy-card));
+  display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;
+}
+.wpp-group-info{flex:1;min-width:0;}
+.wpp-group-name{font-size:13px;font-weight:600;color:#fff;font-family:'Syne',sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.wpp-group-members{font-size:9px;color:rgba(255,255,255,0.7);}
+.wpp-icons{display:flex;gap:14px;color:#fff;font-size:14px;}
+
+.wpp-chat{
+  background:#0b141a;
+  background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40"><circle cx="20" cy="20" r="1" fill="%23ffffff" opacity="0.02"/></svg>');
+  padding:14px 12px;height:380px;overflow:hidden;display:flex;flex-direction:column;gap:8px;
+}
+.wpp-date{align-self:center;background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.6);font-size:8px;padding:3px 10px;border-radius:6px;margin-bottom:4px;}
+.wpp-msg{
+  max-width:80%;padding:7px 10px;border-radius:8px;font-size:10px;line-height:1.5;position:relative;
+}
+.wpp-msg-in{align-self:flex-start;background:#1f2c34;color:#e9edef;border-radius:0 8px 8px 8px;}
+.wpp-msg-system{align-self:center;background:rgba(255,201,76,0.12);color:var(--gold-light);font-size:8px;padding:5px 12px;border-radius:6px;text-align:center;}
+.wpp-msg-sender{font-size:9px;color:var(--gold);font-weight:600;margin-bottom:2px;font-family:'Syne',sans-serif;}
+.wpp-msg-time{font-size:7px;color:rgba(255,255,255,0.4);text-align:right;margin-top:2px;}
+
+.wpp-input-bar{
+  background:#1f2c34;padding:8px 12px;display:flex;align-items:center;gap:8px;
+  position:absolute;bottom:0;left:0;right:0;
+}
+.wpp-input-fake{flex:1;background:#2a3942;border-radius:99px;padding:7px 12px;font-size:9px;color:rgba(255,255,255,0.4);}
+.wpp-send{width:28px;height:28px;border-radius:50%;background:var(--wpp);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;}
+
+/* FLOATING BADGES */
+.float-badge{
+  position:absolute;background:linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.01));
+  backdrop-filter:blur(20px);border-radius:14px;padding:10px 14px;
+  display:flex;align-items:center;gap:10px;z-index:30;
+  box-shadow:0 0 0 1px rgba(255,255,255,0.1), 0 20px 40px -12px rgba(0,0,0,0.8), inset 0 1px 1px rgba(255,255,255,0.2);
+}
+.float-badge-1{top:50px;left:-40px;animation:floaty 4s ease-in-out infinite;}
+.float-badge-2{bottom:80px;right:-40px;animation:floaty 4s ease-in-out infinite 1.5s;}
+.fb-icon{width:32px;height:32px;border-radius:8px;background:rgba(201,168,76,0.15);border:0.5px solid rgba(201,168,76,0.3);display:flex;align-items:center;justify-content:center;font-size:15px;}
+.fb-text-title{font-size:10px;font-weight:700;color:#fff;font-family:'Syne',sans-serif;}
+.fb-text-sub{font-size:8px;color:var(--gray);}
+
+/* SECONDARY SECTIONS */
+.section{padding:80px 40px;position:relative;z-index:2;max-width:1100px;margin:0 auto;}
+.section-eyebrow{display:flex;align-items:center;gap:10px;margin-bottom:14px;justify-content:center;}
+.section-eyebrow-line{width:20px;height:1px;background:var(--gold);}
+.section-eyebrow-text{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);}
+.section-title{font-family:'Playfair Display',serif;font-size:clamp(26px,3vw,40px);font-weight:800;text-align:center;letter-spacing:-1px;line-height:1.1;margin-bottom:48px;}
+.section-title em{font-style:italic;color:var(--gold);}
+
+/* FEATURES */
+.features{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+.feature-card{
+  background:linear-gradient(145deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+  border:0.5px solid rgba(255,255,255,0.07);border-radius:14px;padding:24px 18px;
+  transition:all .3s;
+}
+.feature-card:hover{border-color:rgba(201,168,76,0.3);transform:translateY(-4px);}
+.feature-icon{width:44px;height:44px;border-radius:11px;background:rgba(201,168,76,0.1);border:0.5px solid rgba(201,168,76,0.2);display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:14px;}
+.feature-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:#fff;margin-bottom:6px;}
+.feature-text{font-size:11px;color:var(--gray);line-height:1.6;}
+
+/* PROBLEMA */
+.prob-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+.prob-card{background:rgba(255,255,255,0.02);border:0.5px solid rgba(255,255,255,0.07);border-radius:14px;padding:28px 22px;text-align:center;position:relative;overflow:hidden;}
+.prob-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(to right,var(--gold),transparent);}
+.prob-num{font-family:'Playfair Display',serif;font-size:42px;font-weight:900;color:var(--gold);letter-spacing:-2px;margin-bottom:10px;}
+.prob-text{font-size:12px;color:var(--gray);line-height:1.6;}
+
+/* CTA FINAL */
+.cta-final{text-align:center;padding:100px 40px;position:relative;z-index:2;max-width:600px;margin:0 auto;}
+.cta-final::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:500px;height:300px;background:radial-gradient(ellipse,rgba(201,168,76,0.06),transparent 70%);pointer-events:none;}
+.cta-final-title{font-family:'Playfair Display',serif;font-size:clamp(30px,4vw,48px);font-weight:900;letter-spacing:-1.5px;line-height:1.1;margin-bottom:16px;position:relative;}
+.cta-final-title em{font-style:italic;color:var(--gold);}
+.cta-final-sub{font-size:13px;color:var(--gray);line-height:1.7;margin-bottom:32px;position:relative;}
+
+/* FOOTER */
+footer{padding:32px 40px;border-top:0.5px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:space-between;position:relative;z-index:2;max-width:1100px;margin:0 auto;}
+.footer-name{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;}
+.footer-name span{color:var(--gold);}
+.footer-copy{font-size:11px;color:var(--gray-dim);}
+.footer-ig{font-size:11px;color:var(--gray);text-decoration:none;transition:color .2s;}
+.footer-ig:hover{color:var(--gold);}
+
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+@keyframes floaty{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+.reveal{opacity:0;transform:translateY(30px);transition:opacity .7s ease,transform .7s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .hero-grid{grid-template-columns:1fr;gap:48px;}
+  .hero-right{order:-1;}
+  .float-badge-1{left:-10px;}
+  .float-badge-2{right:-10px;}
+  .features{grid-template-columns:1fr 1fr;}
+  .prob-cards{grid-template-columns:1fr;}
+  nav{padding:16px 24px;}
+  .hero{padding:100px 24px 40px;}
+  .section{padding:60px 24px;}
+}
+@media(max-width:480px){
+  .features{grid-template-columns:1fr;}
+  .phone-card{padding:30px 20px;}
+  .iphone{width:230px;height:480px;}
+  .wpp-chat{height:330px;}
+}
+</style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    <div class="nav-logo-icon">
+      <svg viewBox="0 0 18 18" fill="none"><path d="M3 1.5h8l4 4v11H3v-15z" stroke="#C9A84C" stroke-width="1.2" stroke-linejoin="round"/><path d="M11 1.5v4h4" stroke="#C9A84C" stroke-width="1.2" stroke-linejoin="round"/><path d="M5.5 9h7M5.5 11.5h4.5" stroke="#C9A84C" stroke-width="1" stroke-linecap="round"/></svg>
+    </div>
+    <div class="nav-logo-name">le<span>x</span>io</div>
+  </a>
+  <div class="nav-badge">🦊 Lista VIP aberta</div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid">
+    <div class="hero-left">
+      <div class="hero-eyebrow">
+        <div class="hero-eyebrow-line"></div>
+        <div class="hero-eyebrow-text">Acesso antecipado · vagas limitadas</div>
+      </div>
+      <h1 class="hero-title">O advogado que sua empresa <em>sempre precisou</em> está chegando.</h1>
+      <p class="hero-sub">A Lexio é a inteligência jurídica com IA para PMEs brasileiras. Entre na lista VIP e seja um dos primeiros a usar — com um preço que ninguém mais vai ter.</p>
+
+      <div class="vip-offer">
+        <div class="vip-offer-top">
+          <span class="vip-tag">VIP</span>
+          <span class="vip-offer-title">Preço de fundador · pra sempre</span>
+        </div>
+        <div class="vip-prices">
+          <div class="vip-price-now">R$59,90<span>/mês</span></div>
+          <div class="vip-price-old">R$149,90</div>
+        </div>
+        <div class="vip-price-label">// trava esse valor enquanto for cliente</div>
+      </div>
+
+      <div class="hero-form">
+        <div class="form-row">
+          <input class="form-input" type="text" id="nome" placeholder="Seu nome"/>
+        </div>
+        <div class="form-row">
+          <input class="form-input" type="tel" id="wpp" placeholder="WhatsApp (com DDD)"/>
+        </div>
+        <button class="btn-wpp" onclick="entrarVIP()">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.1-1.7-.8-1.9-.9-.3-.1-.5-.1-.7.1-.2.3-.7.9-.9 1.1-.2.2-.3.2-.6.1-1.5-.7-2.4-1.3-3.4-3-.3-.4.3-.4.7-1.3.1-.2 0-.4 0-.5 0-.1-.7-1.6-.9-2.2-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.1.2 2.1 3.3 5.2 4.6 1.9.8 2.6.9 3.6.7.6-.1 1.7-.7 2-1.4.2-.7.2-1.2.2-1.4-.1-.1-.3-.2-.6-.3M12 2a10 10 0 00-8.6 15l-1.3 4.7 4.8-1.3A10 10 0 1012 2z"/></svg>
+          Entrar no grupo VIP
+        </button>
+        <div class="form-disclaimer">🔒 Você entra num grupo fechado no WhatsApp. <span>Zero spam.</span></div>
+      </div>
+
+      <div class="social-proof">
+        <div class="avatars">
+          <div class="avatar">🦊</div>
+          <div class="avatar">👩</div>
+          <div class="avatar">👨</div>
+          <div class="avatar">👩‍💼</div>
+        </div>
+        <div class="social-text">Junte-se aos <strong>primeiros fundadores</strong> da Lexio</div>
+      </div>
+    </div>
+
+    <!-- PHONE -->
+    <div class="hero-right">
+      <div class="phone-card" id="phoneCard">
+        <div class="phone-card-label">VIP</div>
+        <div class="iphone">
+          <div class="notch"></div>
+          <div class="iphone-screen">
+            <div class="wpp-header">
+              <div class="wpp-back">‹</div>
+              <div class="wpp-group-pic">🦊</div>
+              <div class="wpp-group-info">
+                <div class="wpp-group-name">Lexio · Lista VIP</div>
+                <div class="wpp-group-members">você, Lex e +73 membros</div>
+              </div>
+              <div class="wpp-icons">📞 ⋮</div>
+            </div>
+            <div class="wpp-chat">
+              <div class="wpp-date">HOJE</div>
+              <div class="wpp-msg wpp-msg-system">🔒 Grupo fechado · só quem está na lista VIP</div>
+              <div class="wpp-msg wpp-msg-in">
+                <div class="wpp-msg-sender">🦊 Lex</div>
+                Bem-vindo à lista VIP da Lexio! Você vai ser um dos primeiros a usar quando lançarmos.
+                <div class="wpp-msg-time">00:09</div>
+              </div>
+              <div class="wpp-msg wpp-msg-in">
+                <div class="wpp-msg-sender">🦊 Lex</div>
+                E o melhor: preço de fundador travado em R$59,90/mês pra sempre. 🔥
+                <div class="wpp-msg-time">00:09</div>
+              </div>
+              <div class="wpp-msg wpp-msg-in">
+                <div class="wpp-msg-sender">🦊 Lex</div>
+                Aqui você vê os bastidores e dá sua opinião antes de todo mundo.
+                <div class="wpp-msg-time">00:10</div>
+              </div>
+              <div class="wpp-msg wpp-msg-system">📊 73 pessoas já entraram</div>
+            </div>
+            <div class="wpp-input-bar">
+              <div class="wpp-input-fake">Mensagem</div>
+              <div class="wpp-send">➤</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="float-badge float-badge-1">
+          <div class="fb-icon">🔥</div>
+          <div>
+            <div class="fb-text-title">R$59,90 pra sempre</div>
+            <div class="fb-text-sub">Só pra lista VIP</div>
+          </div>
+        </div>
+        <div class="float-badge float-badge-2">
+          <div class="fb-icon">⚡</div>
+          <div>
+            <div class="fb-text-title">Acesso antecipado</div>
+            <div class="fb-text-sub">Antes do público</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- O QUE É -->
+<section class="section">
+  <div class="section-eyebrow reveal"><div class="section-eyebrow-line"></div><div class="section-eyebrow-text">O que você vai ter</div><div class="section-eyebrow-line"></div></div>
+  <h2 class="section-title reveal">Um <em>departamento jurídico</em><br>no seu bolso.</h2>
+  <div class="features">
+    <div class="feature-card reveal">
+      <div class="feature-icon">🦊</div>
+      <div class="feature-title">Chat com o Lex</div>
+      <div class="feature-text">Tire qualquer dúvida jurídica em linguagem simples, sem juridiquês. 24 horas por dia.</div>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feature-icon">📝</div>
+      <div class="feature-title">Gerar contratos</div>
+      <div class="feature-text">Contratos profissionais em segundos, adaptados ao direito brasileiro.</div>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feature-icon">🔍</div>
+      <div class="feature-title">Analisar contratos</div>
+      <div class="feature-text">Aponta riscos, dá um score jurídico e te diz o que negociar antes de assinar.</div>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feature-icon">🔐</div>
+      <div class="feature-title">Cofre jurídico</div>
+      <div class="feature-text">Todos os seus contratos guardados num lugar seguro e organizado.</div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEMA -->
+<section class="section">
+  <div class="section-eyebrow reveal"><div class="section-eyebrow-line"></div><div class="section-eyebrow-text">Por que a Lexio existe</div><div class="section-eyebrow-line"></div></div>
+  <h2 class="section-title reveal">O jurídico no Brasil é<br><em>caro demais.</em></h2>
+  <div class="prob-cards">
+    <div class="prob-card reveal"><div class="prob-num">R$900</div><div class="prob-text">É quanto custa, em média, uma hora de advogado sênior. Inacessível pra maioria.</div></div>
+    <div class="prob-card reveal"><div class="prob-num">73%</div><div class="prob-text">Das empresas brasileiras operam sem nenhuma assessoria jurídica regular.</div></div>
+    <div class="prob-card reveal"><div class="prob-num">R$12B</div><div class="prob-text">Em passivo trabalhista por ano, gerado por contratos mal feitos.</div></div>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<section class="cta-final">
+  <h2 class="cta-final-title reveal">Ainda não existe.<br><em>Mas vai existir.</em></h2>
+  <p class="cta-final-sub reveal">E quem está na lista VIP entra primeiro, com o preço de fundador travado pra sempre. As vagas são limitadas.</p>
+  <div class="hero-form reveal" style="margin:0 auto;">
+    <div class="form-row">
+      <input class="form-input" type="text" id="nome2" placeholder="Seu nome"/>
+    </div>
+    <div class="form-row">
+      <input class="form-input" type="tel" id="wpp2" placeholder="WhatsApp (com DDD)"/>
+    </div>
+    <button class="btn-wpp" onclick="entrarVIP2()">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.1-1.7-.8-1.9-.9-.3-.1-.5-.1-.7.1-.2.3-.7.9-.9 1.1-.2.2-.3.2-.6.1-1.5-.7-2.4-1.3-3.4-3-.3-.4.3-.4.7-1.3.1-.2 0-.4 0-.5 0-.1-.7-1.6-.9-2.2-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.1.2 2.1 3.3 5.2 4.6 1.9.8 2.6.9 3.6.7.6-.1 1.7-.7 2-1.4.2-.7.2-1.2.2-1.4-.1-.1-.3-.2-.6-.3M12 2a10 10 0 00-8.6 15l-1.3 4.7 4.8-1.3A10 10 0 1012 2z"/></svg>
+      Entrar no grupo VIP
+    </button>
+    <div class="form-disclaimer">🔒 Grupo fechado no WhatsApp. <span>Zero spam.</span></div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-name">le<span>x</span>io</div>
+  <div class="footer-copy">© 2026 Lexio · Inteligência Jurídica</div>
+  <a href="https://instagram.com/lexioofc" class="footer-ig" target="_blank">@lexioofc</a>
+</footer>
+
+<script>
+const GRUPO_VIP = 'https://chat.whatsapp.com/EZ8gfoU9Q8S0Sjkqk44zc7?mode=gi_t';
+
+function validar(nome, wpp){
+  if(!nome || !wpp){ alert('Preenche seu nome e WhatsApp pra entrar na lista VIP! 🦊'); return false; }
+  if(wpp.replace(/\D/g,'').length < 10){ alert('Coloca um número de WhatsApp válido com DDD.'); return false; }
+  return true;
+}
+
+function entrarVIP(){
+  const nome = document.getElementById('nome').value.trim();
+  const wpp = document.getElementById('wpp').value.trim();
+  if(validar(nome,wpp)) window.open(GRUPO_VIP,'_blank');
+}
+function entrarVIP2(){
+  const nome = document.getElementById('nome2').value.trim();
+  const wpp = document.getElementById('wpp2').value.trim();
+  if(validar(nome,wpp)) window.open(GRUPO_VIP,'_blank');
+}
+
+// Card 3D mouse tracking
+const card = document.getElementById('phoneCard');
+document.addEventListener('mousemove', e => {
+  if(window.innerWidth < 900) return;
+  const x = (e.clientX / window.innerWidth - 0.5) * 2;
+  const y = (e.clientY / window.innerHeight - 0.5) * 2;
+  card.style.transform = `rotateY(${x*6}deg) rotateX(${-y*6}deg)`;
+});
+
+// Scroll reveal
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(en => { if(en.isIntersecting) en.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+</body>
+</html><!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lexio · Lista VIP</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700&family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold:#C9A84C; --gold-light:#e2c97e;
+  --navy:#06080f; --navy2:#0a101d; --navy-card:#162C6D; --navy-card2:#0A101D;
+  --white:#fff; --gray:#9ca3af; --gray-dim:#6b7280;
+  --wpp:#25D366; --wpp-dark:#075E54;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:'DM Mono',monospace;
+  background:var(--navy);
+  color:var(--white);
+  min-height:100vh;
+  overflow-x:hidden;
+  position:relative;
+}
+
+/* GRAIN */
+body::after{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;opacity:0.05;mix-blend-mode:overlay;
+  background:url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%25" height="100%25" filter="url(%23n)"/></svg>');
+}
+
+/* GRID BG */
+.grid-bg{
+  position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0.4;
+  background-size:60px 60px;
+  background-image:
+    linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px);
+  -webkit-mask-image:radial-gradient(ellipse at center, black 0%, transparent 75%);
+  mask-image:radial-gradient(ellipse at center, black 0%, transparent 75%);
+}
+
+/* NAV */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  padding:20px 40px;display:flex;align-items:center;justify-content:space-between;
+  background:linear-gradient(to bottom, rgba(6,8,15,0.85), transparent);
+  backdrop-filter:blur(6px);
+}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.nav-logo-icon{width:34px;height:34px;border-radius:8px;background:var(--navy2);border:0.5px solid rgba(201,168,76,0.4);display:flex;align-items:center;justify-content:center;}
+.nav-logo-icon svg{width:18px;height:18px;}
+.nav-logo-name{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:#fff;letter-spacing:-0.5px;}
+.nav-logo-name span{color:var(--gold);}
+.nav-badge{font-size:11px;color:var(--gold);background:rgba(201,168,76,0.1);border:0.5px solid rgba(201,168,76,0.25);padding:6px 14px;border-radius:99px;letter-spacing:1px;}
+
+/* HERO */
+.hero{
+  min-height:100vh;display:flex;align-items:center;
+  padding:120px 40px 60px;position:relative;z-index:2;
+  max-width:1300px;margin:0 auto;
+}
+.hero-grid{display:grid;grid-template-columns:1.1fr 0.9fr;gap:60px;align-items:center;width:100%;}
+
+/* LEFT */
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:10px;margin-bottom:24px;
+  opacity:0;animation:fadeUp .8s ease forwards .2s;
+}
+.hero-eyebrow-line{width:24px;height:1px;background:var(--gold);opacity:0.6;}
+.hero-eyebrow-text{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);opacity:0.85;}
+
+.hero-title{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(34px,4.2vw,58px);font-weight:900;
+  line-height:1.05;letter-spacing:-1.5px;color:#fff;margin-bottom:20px;
+  opacity:0;animation:fadeUp .8s ease forwards .4s;
+}
+.hero-title em{font-style:italic;color:var(--gold);}
+.hero-sub{
+  font-size:13px;color:var(--gray);line-height:1.8;letter-spacing:0.3px;
+  margin-bottom:24px;max-width:440px;
+  opacity:0;animation:fadeUp .8s ease forwards .6s;
+}
+
+/* OFERTA VIP */
+.vip-offer{
+  background:linear-gradient(145deg, rgba(201,168,76,0.08), rgba(201,168,76,0.02));
+  border:0.5px solid rgba(201,168,76,0.25);
+  border-radius:14px;padding:18px 20px;margin-bottom:28px;max-width:440px;
+  opacity:0;animation:fadeUp .8s ease forwards .7s;
+}
+.vip-offer-top{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.vip-tag{font-size:9px;background:var(--gold);color:var(--navy);padding:3px 8px;border-radius:4px;font-weight:700;letter-spacing:0.5px;font-family:'Syne',sans-serif;}
+.vip-offer-title{font-size:12px;color:var(--gold-light);font-weight:500;}
+.vip-prices{display:flex;align-items:baseline;gap:12px;}
+.vip-price-now{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:#fff;}
+.vip-price-now span{font-size:13px;color:var(--gray);font-weight:400;}
+.vip-price-old{font-size:13px;color:var(--gray-dim);text-decoration:line-through;}
+.vip-price-label{font-size:10px;color:var(--gold);margin-top:4px;letter-spacing:0.5px;}
+
+/* FORM */
+.hero-form{opacity:0;animation:fadeUp .8s ease forwards .8s;max-width:440px;}
+.form-row{display:flex;gap:10px;margin-bottom:10px;}
+.form-input{
+  flex:1;background:rgba(255,255,255,0.05);border:0.5px solid rgba(255,255,255,0.12);
+  border-radius:10px;padding:14px 16px;font-size:13px;color:#fff;
+  font-family:'DM Mono',monospace;outline:none;transition:border-color .2s;width:100%;
+}
+.form-input::placeholder{color:rgba(255,255,255,0.3);}
+.form-input:focus{border-color:var(--gold);}
+.btn-wpp{
+  width:100%;background:var(--wpp);color:#fff;border:none;border-radius:10px;
+  padding:15px 24px;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;
+  cursor:pointer;letter-spacing:0.3px;transition:all .2s;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  box-shadow:0 8px 24px rgba(37,211,102,0.25);
+}
+.btn-wpp:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(37,211,102,0.35);}
+.btn-wpp:active{transform:translateY(0);}
+.btn-wpp svg{width:20px;height:20px;}
+.form-disclaimer{font-size:10px;color:var(--gray-dim);text-align:center;margin-top:12px;letter-spacing:0.3px;}
+.form-disclaimer span{color:var(--gold);}
+
+/* SOCIAL PROOF */
+.social-proof{
+  display:flex;align-items:center;gap:12px;margin-top:24px;
+  opacity:0;animation:fadeUp .8s ease forwards 1s;
+}
+.avatars{display:flex;}
+.avatar{
+  width:28px;height:28px;border-radius:50%;border:2px solid var(--navy);
+  background:linear-gradient(135deg,var(--gold),var(--navy-card));
+  margin-left:-8px;display:flex;align-items:center;justify-content:center;font-size:11px;
+}
+.avatar:first-child{margin-left:0;}
+.social-text{font-size:11px;color:var(--gray);}
+.social-text strong{color:var(--gold);}
+
+/* RIGHT: PHONE CARD */
+.hero-right{display:flex;align-items:center;justify-content:center;opacity:0;animation:fadeIn 1s ease forwards .9s;perspective:1500px;}
+
+.phone-card{
+  position:relative;
+  background:linear-gradient(145deg, var(--navy-card) 0%, var(--navy-card2) 100%);
+  border-radius:36px;padding:40px 30px;
+  border:1px solid rgba(255,255,255,0.04);
+  box-shadow:0 40px 100px -20px rgba(0,0,0,0.9), 0 20px 40px -20px rgba(0,0,0,0.8),
+    inset 0 1px 2px rgba(255,255,255,0.2), inset 0 -2px 4px rgba(0,0,0,0.8);
+  transition:transform .4s cubic-bezier(.25,1,.5,1);
+}
+.phone-card-label{
+  position:absolute;top:24px;left:0;right:0;text-align:center;
+  font-family:'Syne',sans-serif;font-size:64px;font-weight:900;
+  color:rgba(255,255,255,0.04);letter-spacing:-2px;text-transform:uppercase;pointer-events:none;
+}
+
+/* IPHONE */
+.iphone{
+  position:relative;width:260px;height:540px;border-radius:44px;margin:0 auto;
+  background:#111;
+  box-shadow:inset 0 0 0 2px #52525B, inset 0 0 0 7px #000, 0 30px 60px -15px rgba(0,0,0,0.9);
+}
+.iphone-screen{
+  position:absolute;inset:7px;border-radius:38px;overflow:hidden;
+  background:#0b141a;
+}
+.notch{position:absolute;top:8px;left:50%;transform:translateX(-50%);width:90px;height:24px;background:#000;border-radius:99px;z-index:50;}
+
+/* WHATSAPP UI */
+.wpp-header{
+  background:var(--wpp-dark);padding:38px 14px 12px;display:flex;align-items:center;gap:10px;
+}
+.wpp-back{color:#fff;font-size:16px;}
+.wpp-group-pic{
+  width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--navy-card));
+  display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;
+}
+.wpp-group-info{flex:1;min-width:0;}
+.wpp-group-name{font-size:13px;font-weight:600;color:#fff;font-family:'Syne',sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.wpp-group-members{font-size:9px;color:rgba(255,255,255,0.7);}
+.wpp-icons{display:flex;gap:14px;color:#fff;font-size:14px;}
+
+.wpp-chat{
+  background:#0b141a;
+  background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40"><circle cx="20" cy="20" r="1" fill="%23ffffff" opacity="0.02"/></svg>');
+  padding:14px 12px;height:380px;overflow:hidden;display:flex;flex-direction:column;gap:8px;
+}
+.wpp-date{align-self:center;background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.6);font-size:8px;padding:3px 10px;border-radius:6px;margin-bottom:4px;}
+.wpp-msg{
+  max-width:80%;padding:7px 10px;border-radius:8px;font-size:10px;line-height:1.5;position:relative;
+}
+.wpp-msg-in{align-self:flex-start;background:#1f2c34;color:#e9edef;border-radius:0 8px 8px 8px;}
+.wpp-msg-system{align-self:center;background:rgba(255,201,76,0.12);color:var(--gold-light);font-size:8px;padding:5px 12px;border-radius:6px;text-align:center;}
+.wpp-msg-sender{font-size:9px;color:var(--gold);font-weight:600;margin-bottom:2px;font-family:'Syne',sans-serif;}
+.wpp-msg-time{font-size:7px;color:rgba(255,255,255,0.4);text-align:right;margin-top:2px;}
+
+.wpp-input-bar{
+  background:#1f2c34;padding:8px 12px;display:flex;align-items:center;gap:8px;
+  position:absolute;bottom:0;left:0;right:0;
+}
+.wpp-input-fake{flex:1;background:#2a3942;border-radius:99px;padding:7px 12px;font-size:9px;color:rgba(255,255,255,0.4);}
+.wpp-send{width:28px;height:28px;border-radius:50%;background:var(--wpp);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;}
+
+/* FLOATING BADGES */
+.float-badge{
+  position:absolute;background:linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.01));
+  backdrop-filter:blur(20px);border-radius:14px;padding:10px 14px;
+  display:flex;align-items:center;gap:10px;z-index:30;
+  box-shadow:0 0 0 1px rgba(255,255,255,0.1), 0 20px 40px -12px rgba(0,0,0,0.8), inset 0 1px 1px rgba(255,255,255,0.2);
+}
+.float-badge-1{top:50px;left:-40px;animation:floaty 4s ease-in-out infinite;}
+.float-badge-2{bottom:80px;right:-40px;animation:floaty 4s ease-in-out infinite 1.5s;}
+.fb-icon{width:32px;height:32px;border-radius:8px;background:rgba(201,168,76,0.15);border:0.5px solid rgba(201,168,76,0.3);display:flex;align-items:center;justify-content:center;font-size:15px;}
+.fb-text-title{font-size:10px;font-weight:700;color:#fff;font-family:'Syne',sans-serif;}
+.fb-text-sub{font-size:8px;color:var(--gray);}
+
+/* SECONDARY SECTIONS */
+.section{padding:80px 40px;position:relative;z-index:2;max-width:1100px;margin:0 auto;}
+.section-eyebrow{display:flex;align-items:center;gap:10px;margin-bottom:14px;justify-content:center;}
+.section-eyebrow-line{width:20px;height:1px;background:var(--gold);}
+.section-eyebrow-text{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);}
+.section-title{font-family:'Playfair Display',serif;font-size:clamp(26px,3vw,40px);font-weight:800;text-align:center;letter-spacing:-1px;line-height:1.1;margin-bottom:48px;}
+.section-title em{font-style:italic;color:var(--gold);}
+
+/* FEATURES */
+.features{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+.feature-card{
+  background:linear-gradient(145deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+  border:0.5px solid rgba(255,255,255,0.07);border-radius:14px;padding:24px 18px;
+  transition:all .3s;
+}
+.feature-card:hover{border-color:rgba(201,168,76,0.3);transform:translateY(-4px);}
+.feature-icon{width:44px;height:44px;border-radius:11px;background:rgba(201,168,76,0.1);border:0.5px solid rgba(201,168,76,0.2);display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:14px;}
+.feature-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:#fff;margin-bottom:6px;}
+.feature-text{font-size:11px;color:var(--gray);line-height:1.6;}
+
+/* PROBLEMA */
+.prob-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+.prob-card{background:rgba(255,255,255,0.02);border:0.5px solid rgba(255,255,255,0.07);border-radius:14px;padding:28px 22px;text-align:center;position:relative;overflow:hidden;}
+.prob-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(to right,var(--gold),transparent);}
+.prob-num{font-family:'Playfair Display',serif;font-size:42px;font-weight:900;color:var(--gold);letter-spacing:-2px;margin-bottom:10px;}
+.prob-text{font-size:12px;color:var(--gray);line-height:1.6;}
+
+/* CTA FINAL */
+.cta-final{text-align:center;padding:100px 40px;position:relative;z-index:2;max-width:600px;margin:0 auto;}
+.cta-final::before{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:500px;height:300px;background:radial-gradient(ellipse,rgba(201,168,76,0.06),transparent 70%);pointer-events:none;}
+.cta-final-title{font-family:'Playfair Display',serif;font-size:clamp(30px,4vw,48px);font-weight:900;letter-spacing:-1.5px;line-height:1.1;margin-bottom:16px;position:relative;}
+.cta-final-title em{font-style:italic;color:var(--gold);}
+.cta-final-sub{font-size:13px;color:var(--gray);line-height:1.7;margin-bottom:32px;position:relative;}
+
+/* FOOTER */
+footer{padding:32px 40px;border-top:0.5px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:space-between;position:relative;z-index:2;max-width:1100px;margin:0 auto;}
+.footer-name{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;}
+.footer-name span{color:var(--gold);}
+.footer-copy{font-size:11px;color:var(--gray-dim);}
+.footer-ig{font-size:11px;color:var(--gray);text-decoration:none;transition:color .2s;}
+.footer-ig:hover{color:var(--gold);}
+
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+@keyframes floaty{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+.reveal{opacity:0;transform:translateY(30px);transition:opacity .7s ease,transform .7s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+  .hero-grid{grid-template-columns:1fr;gap:48px;}
+  .hero-right{order:-1;}
+  .float-badge-1{left:-10px;}
+  .float-badge-2{right:-10px;}
+  .features{grid-template-columns:1fr 1fr;}
+  .prob-cards{grid-template-columns:1fr;}
+  nav{padding:16px 24px;}
+  .hero{padding:100px 24px 40px;}
+  .section{padding:60px 24px;}
+}
+@media(max-width:480px){
+  .features{grid-template-columns:1fr;}
+  .phone-card{padding:30px 20px;}
+  .iphone{width:230px;height:480px;}
+  .wpp-chat{height:330px;}
+}
+</style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    <div class="nav-logo-icon">
+      <svg viewBox="0 0 18 18" fill="none"><path d="M3 1.5h8l4 4v11H3v-15z" stroke="#C9A84C" stroke-width="1.2" stroke-linejoin="round"/><path d="M11 1.5v4h4" stroke="#C9A84C" stroke-width="1.2" stroke-linejoin="round"/><path d="M5.5 9h7M5.5 11.5h4.5" stroke="#C9A84C" stroke-width="1" stroke-linecap="round"/></svg>
+    </div>
+    <div class="nav-logo-name">le<span>x</span>io</div>
+  </a>
+  <div class="nav-badge">🦊 Lista VIP aberta</div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid">
+    <div class="hero-left">
+      <div class="hero-eyebrow">
+        <div class="hero-eyebrow-line"></div>
+        <div class="hero-eyebrow-text">Acesso antecipado · vagas limitadas</div>
+      </div>
+      <h1 class="hero-title">O advogado que sua empresa <em>sempre precisou</em> está chegando.</h1>
+      <p class="hero-sub">A Lexio é a inteligência jurídica com IA para PMEs brasileiras. Entre na lista VIP e seja um dos primeiros a usar — com um preço que ninguém mais vai ter.</p>
+
+      <div class="vip-offer">
+        <div class="vip-offer-top">
+          <span class="vip-tag">VIP</span>
+          <span class="vip-offer-title">Preço de fundador · pra sempre</span>
+        </div>
+        <div class="vip-prices">
+          <div class="vip-price-now">R$59,90<span>/mês</span></div>
+          <div class="vip-price-old">R$149,90</div>
+        </div>
+        <div class="vip-price-label">// trava esse valor enquanto for cliente</div>
+      </div>
+
+      <div class="hero-form">
+        <div class="form-row">
+          <input class="form-input" type="text" id="nome" placeholder="Seu nome"/>
+        </div>
+        <div class="form-row">
+          <input class="form-input" type="tel" id="wpp" placeholder="WhatsApp (com DDD)"/>
+        </div>
+        <button class="btn-wpp" onclick="entrarVIP()">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.1-1.7-.8-1.9-.9-.3-.1-.5-.1-.7.1-.2.3-.7.9-.9 1.1-.2.2-.3.2-.6.1-1.5-.7-2.4-1.3-3.4-3-.3-.4.3-.4.7-1.3.1-.2 0-.4 0-.5 0-.1-.7-1.6-.9-2.2-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.1.2 2.1 3.3 5.2 4.6 1.9.8 2.6.9 3.6.7.6-.1 1.7-.7 2-1.4.2-.7.2-1.2.2-1.4-.1-.1-.3-.2-.6-.3M12 2a10 10 0 00-8.6 15l-1.3 4.7 4.8-1.3A10 10 0 1012 2z"/></svg>
+          Entrar no grupo VIP
+        </button>
+        <div class="form-disclaimer">🔒 Você entra num grupo fechado no WhatsApp. <span>Zero spam.</span></div>
+      </div>
+
+      <div class="social-proof">
+        <div class="avatars">
+          <div class="avatar">🦊</div>
+          <div class="avatar">👩</div>
+          <div class="avatar">👨</div>
+          <div class="avatar">👩‍💼</div>
+        </div>
+        <div class="social-text">Junte-se aos <strong>primeiros fundadores</strong> da Lexio</div>
+      </div>
+    </div>
+
+    <!-- PHONE -->
+    <div class="hero-right">
+      <div class="phone-card" id="phoneCard">
+        <div class="phone-card-label">VIP</div>
+        <div class="iphone">
+          <div class="notch"></div>
+          <div class="iphone-screen">
+            <div class="wpp-header">
+              <div class="wpp-back">‹</div>
+              <div class="wpp-group-pic">🦊</div>
+              <div class="wpp-group-info">
+                <div class="wpp-group-name">Lexio · Lista VIP</div>
+                <div class="wpp-group-members">você, Lex e +73 membros</div>
+              </div>
+              <div class="wpp-icons">📞 ⋮</div>
+            </div>
+            <div class="wpp-chat">
+              <div class="wpp-date">HOJE</div>
+              <div class="wpp-msg wpp-msg-system">🔒 Grupo fechado · só quem está na lista VIP</div>
+              <div class="wpp-msg wpp-msg-in">
+                <div class="wpp-msg-sender">🦊 Lex</div>
+                Bem-vindo à lista VIP da Lexio! Você vai ser um dos primeiros a usar quando lançarmos.
+                <div class="wpp-msg-time">00:09</div>
+              </div>
+              <div class="wpp-msg wpp-msg-in">
+                <div class="wpp-msg-sender">🦊 Lex</div>
+                E o melhor: preço de fundador travado em R$59,90/mês pra sempre. 🔥
+                <div class="wpp-msg-time">00:09</div>
+              </div>
+              <div class="wpp-msg wpp-msg-in">
+                <div class="wpp-msg-sender">🦊 Lex</div>
+                Aqui você vê os bastidores e dá sua opinião antes de todo mundo.
+                <div class="wpp-msg-time">00:10</div>
+              </div>
+              <div class="wpp-msg wpp-msg-system">📊 73 pessoas já entraram</div>
+            </div>
+            <div class="wpp-input-bar">
+              <div class="wpp-input-fake">Mensagem</div>
+              <div class="wpp-send">➤</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="float-badge float-badge-1">
+          <div class="fb-icon">🔥</div>
+          <div>
+            <div class="fb-text-title">R$59,90 pra sempre</div>
+            <div class="fb-text-sub">Só pra lista VIP</div>
+          </div>
+        </div>
+        <div class="float-badge float-badge-2">
+          <div class="fb-icon">⚡</div>
+          <div>
+            <div class="fb-text-title">Acesso antecipado</div>
+            <div class="fb-text-sub">Antes do público</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- O QUE É -->
+<section class="section">
+  <div class="section-eyebrow reveal"><div class="section-eyebrow-line"></div><div class="section-eyebrow-text">O que você vai ter</div><div class="section-eyebrow-line"></div></div>
+  <h2 class="section-title reveal">Um <em>departamento jurídico</em><br>no seu bolso.</h2>
+  <div class="features">
+    <div class="feature-card reveal">
+      <div class="feature-icon">🦊</div>
+      <div class="feature-title">Chat com o Lex</div>
+      <div class="feature-text">Tire qualquer dúvida jurídica em linguagem simples, sem juridiquês. 24 horas por dia.</div>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feature-icon">📝</div>
+      <div class="feature-title">Gerar contratos</div>
+      <div class="feature-text">Contratos profissionais em segundos, adaptados ao direito brasileiro.</div>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feature-icon">🔍</div>
+      <div class="feature-title">Analisar contratos</div>
+      <div class="feature-text">Aponta riscos, dá um score jurídico e te diz o que negociar antes de assinar.</div>
+    </div>
+    <div class="feature-card reveal">
+      <div class="feature-icon">🔐</div>
+      <div class="feature-title">Cofre jurídico</div>
+      <div class="feature-text">Todos os seus contratos guardados num lugar seguro e organizado.</div>
+    </div>
+  </div>
+</section>
+
+<!-- PROBLEMA -->
+<section class="section">
+  <div class="section-eyebrow reveal"><div class="section-eyebrow-line"></div><div class="section-eyebrow-text">Por que a Lexio existe</div><div class="section-eyebrow-line"></div></div>
+  <h2 class="section-title reveal">O jurídico no Brasil é<br><em>caro demais.</em></h2>
+  <div class="prob-cards">
+    <div class="prob-card reveal"><div class="prob-num">R$900</div><div class="prob-text">É quanto custa, em média, uma hora de advogado sênior. Inacessível pra maioria.</div></div>
+    <div class="prob-card reveal"><div class="prob-num">73%</div><div class="prob-text">Das empresas brasileiras operam sem nenhuma assessoria jurídica regular.</div></div>
+    <div class="prob-card reveal"><div class="prob-num">R$12B</div><div class="prob-text">Em passivo trabalhista por ano, gerado por contratos mal feitos.</div></div>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<section class="cta-final">
+  <h2 class="cta-final-title reveal">Ainda não existe.<br><em>Mas vai existir.</em></h2>
+  <p class="cta-final-sub reveal">E quem está na lista VIP entra primeiro, com o preço de fundador travado pra sempre. As vagas são limitadas.</p>
+  <div class="hero-form reveal" style="margin:0 auto;">
+    <div class="form-row">
+      <input class="form-input" type="text" id="nome2" placeholder="Seu nome"/>
+    </div>
+    <div class="form-row">
+      <input class="form-input" type="tel" id="wpp2" placeholder="WhatsApp (com DDD)"/>
+    </div>
+    <button class="btn-wpp" onclick="entrarVIP2()">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.1-1.7-.8-1.9-.9-.3-.1-.5-.1-.7.1-.2.3-.7.9-.9 1.1-.2.2-.3.2-.6.1-1.5-.7-2.4-1.3-3.4-3-.3-.4.3-.4.7-1.3.1-.2 0-.4 0-.5 0-.1-.7-1.6-.9-2.2-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.1.2 2.1 3.3 5.2 4.6 1.9.8 2.6.9 3.6.7.6-.1 1.7-.7 2-1.4.2-.7.2-1.2.2-1.4-.1-.1-.3-.2-.6-.3M12 2a10 10 0 00-8.6 15l-1.3 4.7 4.8-1.3A10 10 0 1012 2z"/></svg>
+      Entrar no grupo VIP
+    </button>
+    <div class="form-disclaimer">🔒 Grupo fechado no WhatsApp. <span>Zero spam.</span></div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-name">le<span>x</span>io</div>
+  <div class="footer-copy">© 2026 Lexio · Inteligência Jurídica</div>
+  <a href="https://instagram.com/lexioofc" class="footer-ig" target="_blank">@lexioofc</a>
+</footer>
+
+<script>
+const GRUPO_VIP = 'https://chat.whatsapp.com/EZ8gfoU9Q8S0Sjkqk44zc7?mode=gi_t';
+
+function validar(nome, wpp){
+  if(!nome || !wpp){ alert('Preenche seu nome e WhatsApp pra entrar na lista VIP! 🦊'); return false; }
+  if(wpp.replace(/\D/g,'').length < 10){ alert('Coloca um número de WhatsApp válido com DDD.'); return false; }
+  return true;
+}
+
+function entrarVIP(){
+  const nome = document.getElementById('nome').value.trim();
+  const wpp = document.getElementById('wpp').value.trim();
+  if(validar(nome,wpp)) window.open(GRUPO_VIP,'_blank');
+}
+function entrarVIP2(){
+  const nome = document.getElementById('nome2').value.trim();
+  const wpp = document.getElementById('wpp2').value.trim();
+  if(validar(nome,wpp)) window.open(GRUPO_VIP,'_blank');
+}
+
+// Card 3D mouse tracking
+const card = document.getElementById('phoneCard');
+document.addEventListener('mousemove', e => {
+  if(window.innerWidth < 900) return;
+  const x = (e.clientX / window.innerWidth - 0.5) * 2;
+  const y = (e.clientY / window.innerHeight - 0.5) * 2;
+  card.style.transform = `rotateY(${x*6}deg) rotateX(${-y*6}deg)`;
+});
+
+// Scroll reveal
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(en => { if(en.isIntersecting) en.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
